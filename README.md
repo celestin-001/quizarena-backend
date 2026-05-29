@@ -1,98 +1,157 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# QuizArena — Frontend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Équipe
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+- Goumou Celestin, goumoucelestin3@gmailcom
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Présentation du projet
 
-## Project setup
+QuizArena est une plateforme de quiz en ligne permettant de créer des quiz, de les partager avec la communauté et de grimper dans un classement global. Les utilisateurs peuvent créer des questions manuellement ou importer des quiz depuis l'API Open Trivia DB avec traduction automatique en français.
+
+**Points les plus faciles :**
+- La mise en place de React Router et du routing
+- La création des composants visuels avec Tailwind CSS
+- La configuration de react-i18next
+
+**Points les plus difficiles :**
+- La gestion du contexte d'authentification avec le renouvellement automatique du JWT
+- La synchronisation de l'état du jeu (timer + réponses + score) dans GamePage
+- La configuration correcte d'ESLint avec les règles TypeScript et React
+
+---
+
+## Technologies utilisées
+
+| Technologie | Version | Raison du choix |
+|---|---|---|
+| React | 18 |
+| Vite | 6 |
+| TypeScript | 5 | Typage statique, détection d'erreurs |
+| React Router | 6 | Gestion des routes côté client|
+| Tailwind CSS | 3 |
+| Axios | 1.x | Client HTTP |
+| react-i18next | 15.x | Internationalisation FR/EN |
+| Vitest | 4.x | Tests unitaires compatibles Vite |
+| React Testing Library | 16.x | Tests de composants orientés utilisateur |
+| ESLint | 9.x | Linter avec règles TypeScript et React |
+
+---
+
+## Gestion de projet
+
+- **GitHub** : hébergement du code — [github.com/celestin-001/quizarena-frontend](https://github.com/celestin-001/quizarena-frontend)
+- **Architecture** : séparation claire par responsabilité (pages, hooks, api, contexts, components)
+
+---
+
+## Expérience générale
+
+**Niveau avant le projet :**
+- React : Intermediare
+- TypeScript : débutant
+- NestJS : découverte
+
+**Ce qui a été appris :**
+- L'utilisation des intercepteurs Axios pour automatiser les headers JWT
+- La configuration d'ESLint avec TypeScript
+- L'écriture de tests avec Vitest et MemoryRouter
+
+**Ce que je referait :**
+- React + Vite + TypeScript : oui, combinaison très productive
+- Tailwind CSS : oui, gain de temps énorme sur le style
+- react-i18next : oui, simple à mettre en place
+
+---
+
+## Installation
+
+### Prérequis
+
+- **Node.js** >= 18 ([nodejs.org](https://nodejs.org))
+- **npm** >= 9
+- Le backend QuizArena doit tourner sur `http://localhost:3000`
+
+> Le projet a été développé et testé sur **Linux (Ubuntu)**. Il fonctionne également sur Windows et macOS.
+
+### Étapes
 
 ```bash
-$ npm install
+# 1. Cloner le repo
+git clone https://github.com/celestin-001/quizarena-frontend.git
+cd quizarena-frontend
+
+# 2. Installer les dépendances
+npm install
+
+# 3. Créer le fichier d'environnement
+cp .env.example .env
+# ou créer manuellement un fichier .env à la racine :
+echo "VITE_API_URL=http://localhost:3000" > .env
 ```
 
-## Compile and run the project
+---
+
+## Utilisation
 
 ```bash
-# development
-$ npm run start
+# Lancer le serveur de développement
+npm run dev
+# → Application disponible sur http://localhost:5173
 
-# watch mode
-$ npm run start:dev
+# Lancer les tests
+npm run test
 
-# production mode
-$ npm run start:prod
+# Vérifier le linter
+npx eslint src/ --ext .ts,.tsx
+
+# Build de production (vérifie TypeScript + compile)
+npm run build
 ```
 
-## Run tests
+> **Recommandation** : lancer sur **Linux** ou **macOS** pour éviter les problèmes de chemins Windows avec Vite.
 
-```bash
-# unit tests
-$ npm run test
+---
 
-# e2e tests
-$ npm run test:e2e
+## Structure du projet
 
-# test coverage
-$ npm run test:cov
+```
+src/
+├── api/            → Fonctions HTTP (POST, PUT, DELETE)
+├── components/     → Composants réutilisables (UI, Layout, Quiz)
+├── contexts/       → AuthContext (état global d'authentification)
+├── hooks/          → Hooks custom pour les requêtes GET
+├── i18n/           → Traductions FR et EN
+├── pages/          → Une page par route
+├── router/         → Configuration React Router
+├── types/          → Interfaces TypeScript
+└── utils/          → Utilitaires (gestion du token JWT)
 ```
 
-## Deployment
+---
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## Pages disponibles
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+| Route | Page | Accès |
+|---|---|---|
+| `/` | Accueil | Public |
+| `/quizzes` | Liste des quiz | Public |
+| `/quizzes/:id` | Détail d'un quiz | Public |
+| `/quizzes/create` | Créer un quiz | Connecté |
+| `/quizzes/:id/edit` | Modifier un quiz | Connecté (auteur) |
+| `/login` | Connexion | Visiteur |
+| `/register` | Inscription | Visiteur |
+| `/game/:id` | Jouer à un quiz | Connecté |
+| `/game/:id/results` | Résultats | Connecté |
+| `/leaderboard` | Classement | Public |
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+---
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Notes finales
 
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- La traduction est disponible en **français** (défaut) et **anglais** via le bouton FR/EN dans la Navbar
+- Le token JWT est renouvelé automatiquement avant expiration
+- La pagination des quiz est stockée dans l'URL (`?page=2`) pour que les liens soient partageables
+- Les quiz peuvent être importés automatiquement depuis **Open Trivia DB** avec traduction FR via **MyMemory**
+- En cas d'erreur 401, l'utilisateur est déconnecté et redirigé vers `/login` automatiquement
