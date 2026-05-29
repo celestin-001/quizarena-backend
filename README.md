@@ -1,24 +1,28 @@
-# QuizArena — Frontend
+# QuizArena — Backend
 
 ## Équipe
 
-- Goumou Celestin, goumoucelestin3@gmailcom
+- Goumou Celestin, goumoucelestin3@gmail.com
 
 ---
 
 ## Présentation du projet
 
-QuizArena est une plateforme de quiz en ligne permettant de créer des quiz, de les partager avec la communauté et de grimper dans un classement global. Les utilisateurs peuvent créer des questions manuellement ou importer des quiz depuis l'API Open Trivia DB avec traduction automatique en français.
+QuizArena est une API RESTful permettant de gérer des quiz, des questions, des utilisateurs et des scores. Elle expose des endpoints pour l'authentification JWT, la gestion complète des quiz et questions (CRUD), la soumission de scores et un classement global.
+
+L'API consomme également deux services externes :
+- **Open Trivia DB** : pour importer des questions de quiz prêtes à l'emploi
+- **MyMemory** : pour traduire automatiquement les questions en français
 
 **Points les plus faciles :**
-- La mise en place de React Router et du routing
-- La création des composants visuels avec Tailwind CSS
-- La configuration de react-i18next
+- La mise en place des modules NestJS 
+- La configuration TypeORM avec SQLite (pas de serveur à installer)
+- La création des entités et relations
 
 **Points les plus difficiles :**
-- La gestion du contexte d'authentification avec le renouvellement automatique du JWT
-- La synchronisation de l'état du jeu (timer + réponses + score) dans GamePage
-- La configuration correcte d'ESLint avec les règles TypeScript et React
+- La gestion de la contrainte FOREIGN KEY avec SQLite et TypeORM
+- Le débogage des DTOs avec class-validator (types number/string)
+- La traduction asynchrone en parallèle des questions importées
 
 ---
 
@@ -26,42 +30,42 @@ QuizArena est une plateforme de quiz en ligne permettant de créer des quiz, de 
 
 | Technologie | Version | Raison du choix |
 |---|---|---|
-| React | 18 |
-| Vite | 6 |
-| TypeScript | 5 | Typage statique, détection d'erreurs |
-| React Router | 6 | Gestion des routes côté client|
-| Tailwind CSS | 3 |
-| Axios | 1.x | Client HTTP |
-| react-i18next | 15.x | Internationalisation FR/EN |
-| Vitest | 4.x | Tests unitaires compatibles Vite |
-| React Testing Library | 16.x | Tests de composants orientés utilisateur |
-| ESLint | 9.x | Linter avec règles TypeScript et React |
+| NestJS | 10.x | Framework Node.js , TypeScript natif |
+| TypeScript | 5.x | Typage statique, cohérence avec le frontend |
+| TypeORM | 0.3.x |
+| SQLite (better-sqlite3) | 9.x | Pas de serveur à installer|
+| Passport.js + JWT | — | Authentification standard et sécurisée |
+| bcrypt | 5.x | Hachage des mots de passe |
+| class-validator | 0.14.x | Validation des DTOs |
+| Axios | 1.x | Appels aux API externes |
 
 ---
 
 ## Gestion de projet
 
-- **GitHub** : hébergement du code — [github.com/celestin-001/quizarena-frontend](https://github.com/celestin-001/quizarena-frontend)
-- **Architecture** : séparation claire par responsabilité (pages, hooks, api, contexts, components)
+
+- **GitHub** : hébergement du code — [github.com/celestin-001/quizarena-backend](https://github.com/celestin-001/quizarena-backend)
 
 ---
 
 ## Expérience générale
 
 **Niveau avant le projet :**
-- React : Intermediare
-- TypeScript : débutant
-- NestJS : découverte
+- NestJS : découverte complète
+- TypeORM : découverte complète
+- JWT : notions de cours
 
 **Ce qui a été appris :**
-- L'utilisation des intercepteurs Axios pour automatiser les headers JWT
-- La configuration d'ESLint avec TypeScript
-- L'écriture de tests avec Vitest et MemoryRouter
+- L'architecture modulaire de NestJS (Module / Controller / Service)
+- Le pattern Repository avec TypeORM
+- La mise en place d'une authentification JWT complète avec guards
+- La consommation d'API externes côté serveur
+- La gestion des relations entre entités (ManyToOne, OneToMany)
 
 **Ce que je referait :**
-- React + Vite + TypeScript : oui, combinaison très productive
-- Tailwind CSS : oui, gain de temps énorme sur le style
-- react-i18next : oui, simple à mettre en place
+- NestJS : oui, très structurant et maintenable
+- SQLite pour le dev :gain de temps énorme
+- TypeORM : oui
 
 ---
 
@@ -71,7 +75,6 @@ QuizArena est une plateforme de quiz en ligne permettant de créer des quiz, de 
 
 - **Node.js** >= 18 ([nodejs.org](https://nodejs.org))
 - **npm** >= 9
-- Le backend QuizArena doit tourner sur `http://localhost:3000`
 
 > Le projet a été développé et testé sur **Linux (Ubuntu)**. Il fonctionne également sur Windows et macOS.
 
@@ -79,38 +82,124 @@ QuizArena est une plateforme de quiz en ligne permettant de créer des quiz, de 
 
 ```bash
 # 1. Cloner le repo
-git clone https://github.com/celestin-001/quizarena-frontend.git
-cd quizarena-frontend
+git clone https://github.com/celestin-001/quizarena-backend.git
+cd quizarena-backend
 
 # 2. Installer les dépendances
 npm install
-
-# 3. Créer le fichier d'environnement
-cp .env.example .env
-# ou créer manuellement un fichier .env à la racine :
-echo "VITE_API_URL=http://localhost:3000" > .env
 ```
+
+La base de données SQLite (`quizarena.db`) est créée **automatiquement** au premier démarrage grâce à `synchronize: true` dans la config TypeORM. Aucune migration n'est nécessaire.
 
 ---
 
 ## Utilisation
 
 ```bash
-# Lancer le serveur de développement
-npm run dev
-# → Application disponible sur http://localhost:5173
+# Lancer en mode développement (watch)
+npm run start:dev
+# → API disponible sur http://localhost:3000
 
-# Lancer les tests
-npm run test
-
-# Vérifier le linter
-npx eslint src/ --ext .ts,.tsx
-
-# Build de production (vérifie TypeScript + compile)
+# Lancer en mode production
 npm run build
+npm run start:prod
 ```
 
-> **Recommandation** : lancer sur **Linux** ou **macOS** pour éviter les problèmes de chemins Windows avec Vite.
+> **Recommandation** : utiliser le mode `start:dev` en développement pour le rechargement automatique.
+
+---
+
+## Routes d'API
+
+### Auth — `/auth`
+
+```
+[POST] /auth/register  → Créer un compte utilisateur
+                         Body: { username, email, password }
+                         Retourne: { token, user }
+
+[POST] /auth/login     → Se connecter
+                         Body: { email, password }
+                         Retourne: { token, user }
+
+[GET]  /auth/me        → Récupérer le profil connecté
+                         Headers: Authorization: Bearer <token>
+                         Retourne: { id, username, email, createdAt }
+```
+
+### Quiz — `/quizzes`
+
+```
+[GET]  /quizzes                → Liste paginée des quiz
+                                 Query: ?page=1&search=&category=&difficulty=
+                                 Retourne: { data, total, page, limit }
+
+[GET]  /quizzes/:id            → Détail d'un quiz avec ses questions
+                                 Retourne: { ...quiz, questions[] }
+
+[POST] /quizzes                → Créer un quiz (authentifié)
+                                 Headers: Authorization: Bearer <token>
+                                 Body: { title, description?, category, difficulty? }
+                                 Retourne: Quiz créé
+
+[PUT]  /quizzes/:id            → Modifier un quiz (authentifié, auteur uniquement)
+                                 Headers: Authorization: Bearer <token>
+                                 Body: { title?, description?, category?, difficulty? }
+                                 Retourne: Quiz modifié
+
+[DELETE] /quizzes/:id          → Supprimer un quiz (authentifié, auteur uniquement)
+                                 Headers: Authorization: Bearer <token>
+                                 Retourne: { message }
+```
+
+### Questions — `/quizzes/:quizId/questions` et `/questions`
+
+```
+[GET]  /quizzes/:quizId/questions     → Liste des questions d'un quiz
+                                        Retourne: Question[]
+
+[POST] /quizzes/:quizId/questions     → Ajouter une question (authentifié, auteur)
+                                        Headers: Authorization: Bearer <token>
+                                        Body: { text, options[], correctIndex, points? }
+                                        Retourne: Question créée
+
+[PUT]  /questions/:id                 → Modifier une question (authentifié, auteur)
+                                        Headers: Authorization: Bearer <token>
+                                        Body: { text?, options[]?, correctIndex?, points? }
+                                        Retourne: Question modifiée
+
+[DELETE] /questions/:id               → Supprimer une question (authentifié, auteur)
+                                        Headers: Authorization: Bearer <token>
+                                        Retourne: { message }
+```
+
+### Jeu — `/games`
+
+```
+[POST] /games                  → Soumettre un score (authentifié)
+                                 Headers: Authorization: Bearer <token>
+                                 Body: { quizId, score, totalPoints, answers[] }
+                                 Retourne: GameResult créé
+
+[GET]  /games/leaderboard      → Classement global (public)
+                                 Retourne: { rank, username, totalScore, gamesPlayed, avgPercent }[]
+
+[GET]  /games/stats/:userId    → Statistiques d'un utilisateur (authentifié)
+                                 Headers: Authorization: Bearer <token>
+                                 Retourne: { gamesPlayed, totalScore, avgPercent, recentGames[] }
+```
+
+### Trivia (API externe) — `/trivia`
+
+```
+[GET]  /trivia/categories      → Liste des catégories Open Trivia DB traduites en FR
+                                 Retourne: { id, name }[]
+
+[POST] /trivia/import          → Importer un quiz depuis Open Trivia DB (authentifié)
+                                 Headers: Authorization: Bearer <token>
+                                 Body: { title, amount?, difficulty?, categoryId? }
+                                 Retourne: Quiz créé avec questions traduites en français
+```
 
 ---
 
@@ -118,40 +207,34 @@ npm run build
 
 ```
 src/
-├── api/            → Fonctions HTTP (POST, PUT, DELETE)
-├── components/     → Composants réutilisables (UI, Layout, Quiz)
-├── contexts/       → AuthContext (état global d'authentification)
-├── hooks/          → Hooks custom pour les requêtes GET
-├── i18n/           → Traductions FR et EN
-├── pages/          → Une page par route
-├── router/         → Configuration React Router
-├── types/          → Interfaces TypeScript
-└── utils/          → Utilitaires (gestion du token JWT)
+├── auth/           → Authentification JWT (register, login, strategy)
+├── game/           → Scores et classement
+├── question/       → CRUD des questions
+├── quiz/           → CRUD des quiz
+├── trivia/         → Import depuis Open Trivia DB + traduction MyMemory
+├── user/           → Entité utilisateur
+├── app.module.ts   → Module racine
+└── main.ts         → Point d'entrée (CORS, validation, port 3000)
 ```
 
 ---
 
-## Pages disponibles
+## Services externes consommés
 
-| Route | Page | Accès |
-|---|---|---|
-| `/` | Accueil | Public |
-| `/quizzes` | Liste des quiz | Public |
-| `/quizzes/:id` | Détail d'un quiz | Public |
-| `/quizzes/create` | Créer un quiz | Connecté |
-| `/quizzes/:id/edit` | Modifier un quiz | Connecté (auteur) |
-| `/login` | Connexion | Visiteur |
-| `/register` | Inscription | Visiteur |
-| `/game/:id` | Jouer à un quiz | Connecté |
-| `/game/:id/results` | Résultats | Connecté |
-| `/leaderboard` | Classement | Public |
+### Open Trivia DB
+- **URL** : `https://opentdb.com/api.php`
+- **Usage** : Récupération de questions de quiz en anglais
+- **Authentification** : aucune (API publique gratuite)
+
+### MyMemory Translation
+- **URL** : `https://api.mymemory.translated.net/get`
+- **Usage** : Traduction automatique anglais → français des questions importées
+- **Authentification** : aucune (API publique gratuite)
 
 ---
 
-## Notes finales
-
-- La traduction est disponible en **français** (défaut) et **anglais** via le bouton FR/EN dans la Navbar
-- Le token JWT est renouvelé automatiquement avant expiration
-- La pagination des quiz est stockée dans l'URL (`?page=2`) pour que les liens soient partageables
-- Les quiz peuvent être importés automatiquement depuis **Open Trivia DB** avec traduction FR via **MyMemory**
-- En cas d'erreur 401, l'utilisateur est déconnecté et redirigé vers `/login` automatiquement
+- La base de données `quizarena.db` est créée automatiquement à la racine du projet
+- Le secret JWT est actuellement en dur (`quizarena_secret`) — à déplacer dans un `.env` pour la production
+- `synchronize: true` dans TypeORM recrée les tables automatiquement — à désactiver en production
+- Le CORS est configuré pour accepter uniquement `http://localhost:5173` (frontend dev)
+- Les mots de passe sont hachés avec bcrypt (10 rounds) — jamais stockés en clair
